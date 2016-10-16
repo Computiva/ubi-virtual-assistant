@@ -27,14 +27,17 @@ import re
 import socket
 import subprocess
 import uuid
- # add to requeriments
 from datetime import datetime
 from random import choice
+
+#implement later
+#  update kernel
+#  sudo update-initramfs -tu -k all
 
 try:
     import wikipedia
 except:
-    print "ubi: 1 modulo falta a ser instalado. Só um momento que irei procurar por ele..."
+    print "ubi: module missing to be installed. Just a moment.."
     os.system("sleep 3")
     os.system("sudo apt-get install python-pip")
     os.system("sudo pip install wikipedia")
@@ -104,6 +107,12 @@ def fun (x):
         print "ubi: In short, I am your personal assistant. I try to make things easier to do on your computer\n"
         notify = pynotify.Notification("In short, I am your personal assistant. I try to make things easier to do on your computer", '', "/usr/share/ubi/lib/img/ubi.svg")
         notify.show()
+        
+    elif x == 'starter --enable':
+        ubi_on_start(x)
+    elif x == 'starter --remove':
+        ubi_on_start(x)
+        
     elif x == 'starter':
         date = datetime.now()
         os.system("/usr/share/ubi/lib/sound-module ubi &")
@@ -138,6 +147,21 @@ def fun (x):
         notify.show()
     else:
         return False
+
+def ubi_on_start (x):
+	if x == "starter --enable":
+		if os.path.exists('/$HOME/.config/autostart/ubi.desktop') == True:
+			print "ubi: It is already enabled"
+		else:
+			os.system("sudo cp -R /usr/share/ubi/lib/ubi.desktop /$HOME/.config/autostart")
+			print ("ubi: now I will be at startup")
+	elif x == "starter --remove":
+		if os.path.exists('/$HOME/.config/autostart/ubi.desktop') == True:
+			os.system("rm /$HOME/.config/autostart/ubi.desktop")
+		else:
+			print "ubi: It is already removable"
+	else: 
+		return 0;
 
 def username ():
         os.system("whoami > /tmp/ubi_tmp.txt")
@@ -462,7 +486,10 @@ elif a5[0] == 'who' and a5[1] == 'is':
     a5.remove('who')
     a5.remove('is')
     s = ' '.join(a5)
+    s = s.replace('?', '')
+    s = s.replace('!', '')
     wiki(s)
+
 
 #----------------------------------Homework------------------------------------#
 
@@ -480,6 +507,7 @@ elif a5[0] == 'homework' and a5[1] == 'on':
     a5.remove('homework')
     a5.remove('on')
     s = ' '.join(a5)
+    s = s.replace('?', '')
     homework(s)
 
 #--------------------------------Search online---------------------------------#
@@ -617,6 +645,8 @@ elif enter[:5] == "clear" or enter[:5] == "clean":
 
 elif enter[a12:] == "download site" or enter[a13:] == "site download":
     sitedownload()
+
+#-------------------------------Fun enter--------------------------------------#
 
 elif fun(enter) == False:
     sorry(enter)
